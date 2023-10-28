@@ -29,7 +29,7 @@ html, body {
 }
 
 @media (hover: hover) {
-  button:hover, .redirect:hover {
+  button:hover, .redirect:hover, .skip:hover, .uploadImage:hover  {
       opacity: .5;
       cursor: pointer;
   }
@@ -38,7 +38,7 @@ html, body {
 .cover {
   width: 100%;
   height: 100%;
-  background-color: #4142459a;
+  background-color: #ffffffca;
   position: fixed;
   top: 0;
   left: 0;
@@ -131,7 +131,6 @@ button
   font-size: 1em;
   color: #414245;
 }
-
 .error
 {
   font-family: roundsBold;
@@ -139,3 +138,38 @@ button
   color: #bb3153;
   margin: 0;
 }
+p
+{
+  text-align: center;
+  color:#414245;
+  font-family: rounds;
+  font-size: 1em;
+}
+h2
+{
+  text-align: center;
+  color:#414245;
+  font-family: comic;
+  font-size: 2.5em;
+}
+h3
+{
+  text-align: center;
+  color:#414245;
+  font-family: comic;
+  font-size: 1.5em;
+}
+
+#feedPage, #searchPage, #searchResultsPage, #notificationsPage, #userProfilePage
+{
+  position: absolute;
+  top: 10vh;
+  z-index: 4;
+  width: 100%;
+}
+
+#header, #footer
+{
+  z-index: 10; 
+}
+  

@@ -1,31 +1,33 @@
 <?php
-    // Include database connection
+    //Include database connection
     include ("connection.php");
+
+    session_start(); // Start the session
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = htmlspecialchars($_POST['username']);
         $password = htmlspecialchars($_POST['password']);
 
-        // Check if username already exists
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username=?");
-        $stmt->bind_param("s", $username);
+        // Use prepared statements to prevent SQL injection
+        $stmt = $conn->prepare("SELECT * FROM users WHERE username=? AND password=?");
+        $stmt->bind_param("ss", $username, $password);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            echo "Username already exists. Please choose a different username.";
+            // Fetch the user's ID
+            $row = $result->fetch_assoc();
+            $userID = $row['userID'];
+
+            // Store the user's ID in a session variable
+            $_SESSION['currUser'] = $userID;
+
+            echo "Login successful!";
         } else {
-            // Insert new user
-            $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-            $stmt->bind_param("ss", $username, $password);
-            if ($stmt->execute()) {
-                echo "Signup successful!";
-            } else {
-                echo "Error signing up. Please try again.";
-            }
+            echo "Invalid username or password";
         }
 
-        // Close the statement
+        // Close the statement and the connection
         $stmt->close();
         $conn->close();
     }

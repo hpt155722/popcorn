@@ -1,1 +1,162 @@
-<p> CREATE ACCOUNT PAGE </p>
+
+<style>
+
+    .skip
+    {
+        text-align: center;
+        color:#59575acd;
+        font-family: comic;
+        font-size: 1.5em;
+
+        position: absolute;
+        bottom: 8vh;
+    }
+    .uploadImage
+    {
+    width:120vw;
+    max-width: 600px;
+    }
+    #croppedImage
+    {
+        height: 35vh;
+    }
+    .cr-boundary {
+    border-radius: 50%;
+    }
+
+</style>
+<div class = 'verContainer'>
+    <div class = 'smallVerContainer' style = 'height: 70vh'>
+        <h2 id="createGreeting"></h2>
+        <h3> upload a profile picture </h3>
+
+        <!-- Display the image -->
+        <picture>
+            <source media="(max-width: 700px)" srcset="resources/images/uploadPhoto_small.webp">
+            <img id="uploadImage" class = 'uploadImage' src="resources/images/uploadPhoto_large.webp" alt="Upload Image">
+        </picture>
+
+        <!-- Crop photo container -->
+        <div id="croppedImage"></div>
+
+        <div class = 'horContainer'>
+            <button style = 'display: none' id="setProfilePic" onclick = 'setAsProfile()'>  set as profile</button>
+        </div>
+
+        <!-- Add an invisible file input element -->
+        <input style = 'display: none' type="file" id="fileInput">
+
+    </div>
+    <p class = 'skip'> skip this step </p>
+</div>
+
+
+//--------------------------------------------------------------------------------------
+
+            //CREATE AN ACCOUNT PAGE
+
+//--------------------------------------------------------------------------------------
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+<script>
+
+    var currentUsername = sessionStorage.getItem('currentUsername');
+    document.getElementById('createGreeting').innerText = "hello " + currentUsername + "!";
+
+    // Trigger file input when the label is clicked
+    $('#uploadImage').click(function() {
+        $('#fileInput').click();
+    });
+
+    $('#fileInput').change(function() {
+        var file = this.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+            var image = new Image();
+            image.src = e.target.result;
+            $(image).on('load', function() {
+                // Initialize Croppie
+                var $croppedImage = $('#croppedImage');
+                $croppedImage.croppie({
+                viewport: {
+                    width: 300,
+                    height: 300,
+                    type: 'circle'
+                },
+                boundary: {
+                    width: 300,
+                    height: 300
+                }
+                });
+                $croppedImage.croppie('bind', {
+                url: e.target.result
+                });
+
+                // Set cropContainer size to a square
+                var size = Math.min(image.width, image.height);
+                var $cropContainer = $('#cropContainer');
+                $cropContainer.width(size);
+                $cropContainer.height(size);
+
+                // Set up Croppie events
+                $croppedImage.on('update.croppie', function (ev, data) {
+                // Update the display of the cropped image
+                $croppedResult = $('#croppedResult');
+                $croppedResult.empty();
+                $croppedResult.append($('<img>', { src: data.image }));
+                });
+
+                // Show the "Set as Profile Pic" button
+                $('#setProfilePic').show();
+                $('#uploadImage').hide();
+            });
+            };
+            reader.readAsDataURL(file);
+        }
+        });
+
+
+    // Handle "Set as Profile Pic" button click
+    function setAsProfile() {
+        $('#croppedImage').croppie('result', {
+        type: 'base64',
+        size: 'original',
+        format: 'jpeg'
+        }).then(function(croppedData) {
+        // Save the cropped image (you can use AJAX to send it to the server)
+        saveCroppedImage(croppedData);
+        });
+    };
+
+    function saveCroppedImage(croppedData) {
+    var currentUsername = sessionStorage.getItem('currentUsername');
+
+    // Send the cropped image data to the server using Ajax
+    $.ajax({
+        url: 'utils/uploadPFP.php', // Adjust the URL as needed
+        type: 'POST',
+        data: {
+            currentUsername: currentUsername,
+            croppedData: croppedData
+        },
+        success: function(response) {
+            // Handle the response
+            console.log(response);
+
+            // Check if the response is "Image uploaded successfully!"
+            if (response.trim() === "Image uploaded successfully!") {
+                // If so, redirect to the 'feed' page
+                setQueryParam('feed');
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            // Handle any errors
+            console.error('Error:', textStatus, errorThrown);
+        }
+    });
+}
+
+
+</script>

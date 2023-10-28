@@ -1,3 +1,17 @@
+<?php
+    session_start();
+
+    if ($_GET['page'] === 'login' || $_GET['page'] === 'signup') {
+        $_SESSION['currUser'] = null;
+    }
+
+    if (!isset($_SESSION['currUser']) && $_GET['page'] !== 'login' && $_GET['page'] !== 'signup') {
+        header("Location: index.php?page=login");
+        exit();
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,13 +33,12 @@
     <!-- Android Chrome Bookmark Icon (192x192 pixels) -->
     <link rel="icon" sizes="192x192" href="android-chrome-icon.png">
 
+    <!-- Import jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
     <!-- External Javascript -->
     <script src="main.js"></script>
 
-    <!-- Import jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    
     <!-- External Stylesheets -->
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="animations.css">
@@ -33,6 +46,9 @@
 </head>
 <body onload = 'onload()'>
     <!-- Header -->
+    <div id = 'header'></div>
+
+
 
     <!-- Login Page -->
     <div id="loginPage"></div>
@@ -60,6 +76,7 @@
 
 
     <!-- Footer -->
+    <div id="footer"></div>
 </body>
 
 </html>

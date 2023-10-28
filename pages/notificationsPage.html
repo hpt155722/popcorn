@@ -1,1 +1,82 @@
-<p> NOTIFICATIONS PAGE </p>
+<style>
+    html, body {
+        background-color: #fff7f0;
+    }
+    .notification
+    {
+        background-color: #ffc337a2;
+        border-radius: 1em;
+        padding: 1em;
+        margin: 2em;
+        font-family: roundsBold;
+        color:#4e464d;
+        font-size: 1em;
+        display: flex;
+    }
+    .heart
+    {
+        width: 2em;
+    }
+    .textVerticalCenter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 2em;
+        width: max-content;
+        margin-left: 2em;
+    }
+</style>
+
+<div class = 'notificationContainer'></div>
+<p id = 'noNotifications' style = 'display: none'> no notifications yet! </p>
+<script>
+    function getLikesPostsUsers() {
+    $.ajax({
+        url: 'utils/getCurrentUsersNotification.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                var data = response.data;
+                if (data.length > 0) {
+                    // Process data
+                    data.forEach(function(row) {
+                        var likeUserID = row.userID;
+                        // Additional AJAX request to get username
+                        $.ajax({
+                            url: 'utils/getUsernameByID.php',
+                            type: 'GET',
+                            data: { userID: likeUserID },
+                            dataType: 'json',
+                            success: function(usernameResponse) {
+                                if (usernameResponse.success) {
+                                    var username = usernameResponse.username;
+                                    // Append username to notification container
+                                    $('.notificationContainer').append("<div class = 'notification'> <img class = 'heart' src = 'resources/icons/heart.png'/> <div class = 'textVerticalCenter'>" + username + ' liked your post! </div></div>');
+                                } else {
+                                    console.error('Error getting username: ' + usernameResponse.message);
+                                }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                console.error('Error getting username:', textStatus, errorThrown);
+                            }
+                        });
+                    });
+                } else {
+                    $('#noNotifications').show();
+                }
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+        }
+    });
+}
+
+    // Call the function
+    getLikesPostsUsers();
+
+
+</script>

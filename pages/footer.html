@@ -1,0 +1,58 @@
+<style>
+    .footerBg
+    {
+        height: max-content;
+        width: 100vw;
+        background-color: #ffc237;
+        position: fixed;
+        bottom: 0;
+        z-index: 9999;
+    }
+    .icon
+    {
+        height: 1.7em;
+        margin: 2vh 1vw;
+    }
+    @media (hover: hover) {
+    .icon:hover  {
+        opacity: .5;
+        cursor: pointer;
+    }
+    }
+
+</style>
+
+<div class = 'footerBg'>
+    <div class = 'horContainer'>
+        <img onclick = "setQueryParam('feed')" id = 'feedIcon' class = 'icon' src = 'resources/icons/home.webp'/>
+        <img onclick = "setQueryParam('search')"id = 'searchIcon' class = 'icon' src = 'resources/icons/search.webp'/>
+        <img onclick = "setQueryParam('notifications')" id = 'heartIcon' class = 'icon' src = 'resources/icons/heart.webp'/>
+        <img onclick = "setQueryParam('userProfile')" id = 'userIcon'class = 'icon' src = 'resources/icons/user.webp'/>
+    </div>
+</div>
+
+<script>
+    if( currentParam == 'feedPage') {
+        $('#feedIcon').css('opacity', 1);
+        $('#searchIcon').css('opacity', 0.65);
+        $('#heartIcon').css('opacity', 0.65);
+        $('#userIcon').css('opacity', 0.65);
+    }
+    else if (currentParam == 'searchPage') {
+        $('#searchIcon').css('opacity', 1);
+        $('#heartIcon').css('opacity', 0.65);
+        $('#userIcon').css('opacity', 0.65);
+        $('#feedIcon').css('opacity', 0.65);
+    } else if (currentParam == 'notificationsPage') {
+        $('#searchIcon').css('opacity', 0.65);
+        $('#heartIcon').css('opacity', 1);
+        $('#userIcon').css('opacity', 0.65);
+        $('#feedIcon').css('opacity', 0.65);
+    } else if (currentParam == 'userProfilePage') {
+        $('#searchIcon').css('opacity', 0.65);
+        $('#heartIcon').css('opacity', 0.65);
+        $('#userIcon').css('opacity', 1);
+        $('#feedIcon').css('opacity', 0.65);
+    }
+
+</script>

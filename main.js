@@ -4,16 +4,19 @@
 
 //--------------------------------------------------------------------------------------
 
-function onload() {
+function onload()
+{
     if (!getQueryParam('page')) { 
         $('#loginPage', '#signUpPage, #createAccountPage, #feedPage, #searchPage, #searchResultsPage, #notificationPage, #accountPage').hide();
         setQueryParam('login');
     }
     else
     {
+        $('#loginPage', '#signUpPage, #createAccountPage, #feedPage, #searchPage, #searchResultsPage, #notificationPage, #accountPage').hide();
         loadPageBasedOnQueryParam();
     }
 }
+
 
 //--------------------------------------------------------------------------------------
 
@@ -38,8 +41,11 @@ function setQueryParam(value) {
             location.reload();
         }, 300);
     }
-    
+    else {
+        location.reload();
+    }
 }
+
 
 function loadPageBasedOnQueryParam() {
     var pageParam = getQueryParam('page');
@@ -50,6 +56,7 @@ function loadPageBasedOnQueryParam() {
             $('#' + pageParam + 'Page').removeClass('fade-in');
         }, 300);
     }
+    
 }
 
 function getQueryParam(name) {
@@ -67,7 +74,9 @@ window.onpopstate = function(event) {
 
 //--------------------------------------------------------------------------------------
 
+let currentParam;
 function loadPageContent(pageClass) {
+    currentParam = pageClass;
     var filePath = 'pages/' + pageClass + '.html';
     $.ajax({
         url: filePath,
@@ -76,23 +85,43 @@ function loadPageContent(pageClass) {
         success: function(data) {
             // If the request was successful, insert the content into the corresponding div
             $('#' + pageClass).html(data);
-
             // Add query parameter to the URL
             var queryParam = pageClass.slice(0, -4);
-            window.history.pushState({}, document.title, window.location.pathname + '?page=' + queryParam);            
+            window.history.pushState({}, document.title, window.location.pathname + '?page=' + queryParam);
+
+            // Check if pageClass is not login, signup, or createAccount
+            if (pageClass !== 'loginPage' && pageClass !== 'signupPage' && pageClass !== 'createAccountPage') {
+                // Load header content
+                $.ajax({
+                    url: 'pages/header.html',
+                    type: 'GET',
+                    dataType: 'html',
+                    success: function(headerData) {
+                        $('#header').html(headerData);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error loading header content:', textStatus, errorThrown);
+                    }
+                });
+                // Load footer content
+                $.ajax({
+                    url: 'pages/footer.html',
+                    type: 'GET',
+                    dataType: 'html',
+                    success: function(footerData) {
+                        $('#footer').html(footerData);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error loading footer content:', textStatus, errorThrown);
+                    }
+                });
+            }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error('Error loading content:', textStatus, errorThrown);
         }
     });
 }
-
-//--------------------------------------------------------------------------------------
-
-            //HANDLE PAGE CHANGE
-
-//--------------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------------
 
@@ -115,7 +144,17 @@ function validateLogin()
                 password: password
             },
             success: function(response) {
-                setQueryParam('home');
+                if (response === "Invalid username or password") {
+                    $('#signupError').html(response);
+                    $('#signupError').show();
+                } else if (response === "Login successful!") {
+                    sessionStorage.setItem('currentUsername', username);
+                    setQueryParam('feed');
+                }
+                else {
+                    $('#signupError').html(response);
+                    $('#signupError').show();
+                }
             }
         });
     }
@@ -132,8 +171,8 @@ function validateSignup() {
     var username = $('#createdUsername').val();
     var password = $('#createdPassword').val();
     var passwordConfirm = $('#createdPasswordConfirm').val();
-
-    if (username !== '' && password !== '' && password === passwordConfirm) {
+    console.log(username + ' ' + password + ' ' + passwordConfirm);
+    if (username !== '' && password !== '' && password.length >= 8 && password === passwordConfirm) {
         $.ajax({
             type: 'POST',
             url: 'utils/validateSignup.php',
@@ -142,18 +181,17 @@ function validateSignup() {
                 password: password
             },
             success: function(response) {
-                alert(response);
                 if (response === "username already exists. please choose a different username.") {
                     $('#signupError').html(response);
                     $('#signupError').show();
                 } else if (response === "Signup successful!") {
+                    sessionStorage.setItem('currentUsername', username);
                     setQueryParam('createAccount');
                 } else if (response === "error: credentials cannot be empty") {
+                    console.log('case 1');
                     $('#signupError').html(response);
                     $('#signupError').show();
-                }
-                else
-                {
+                } else {
                     $('#signupError').html(response);
                     $('#signupError').show();
                 }
@@ -162,9 +200,13 @@ function validateSignup() {
     } else {
         if (password !== passwordConfirm) {
             $('#signupError').html('error: passwords do not match');
+        } else if (password.length < 8) {
+            $('#signupError').html('error: password must be at least 8 characters');
         } else {
+            console.log('case 2');
             $('#signupError').html('error: credentials cannot be empty');
         }
         $('#signupError').show();
     }
 }
+

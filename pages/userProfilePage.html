@@ -1,1 +1,220 @@
-<p> user profile PAGE </p>
+<style>
+    html, body {
+        background-color: #fff7f0;
+    }
+
+    @media (hover: hover) {
+    .trashIcon:hover w {
+        opacity: .5;
+        cursor: pointer;
+    }
+}
+    #profilePicDisplay
+    {
+        border-radius: 10em;
+        width: 25vw;
+        max-width: 500px;
+        margin: 2em 1em 1em 2em;
+    }
+    #username
+    {
+        font-size: 1.2em;
+        font-family: roundsBold;
+    }
+    .userInfo
+    {
+        display: flex;
+    }
+    .textVerticalCenter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 25vw + 2em;
+    }
+    hr
+    {
+        width: 80%;
+    }
+    
+    .post
+    {
+        background-color: #ffc337a2;
+        border-radius: 5vw;
+        margin: 3vh 5vw;
+        padding: 3vh 6vw;
+        position: relative;
+    }
+    .userInfoContainer
+    {
+        display: flex;
+        width: 50%;
+        height: auto;
+    }
+    .username
+    {
+        font-size: 1.2em;
+        font-family: roundsBold;
+        color: #36394d;
+        margin: 0 4vw;
+    }
+    .profilePic
+    {
+        width: 13vw;
+        height: 13vw;
+        max-width: 300px;
+        border-radius: 100vw;
+    }
+    .message
+    {
+        font-size: 1em;
+        font-family: roundsBold;
+        color: #36394d;
+        margin-bottom: 4vh;
+        text-align: left;
+    }
+    .datePosted
+    {
+        font-size: .7em;
+        font-family: roundsBold;
+        color: #36394dbb;
+        position: absolute;
+        bottom: .5vh;
+        right: 5vw;
+    }
+    .trashIcon
+    {
+        width: 5vw;
+        position: absolute;
+        bottom: 2vh;
+        left: 5vw;
+    }
+    .logout
+    {
+        position: absolute;
+        top: 0vh;
+        right: 3vw;
+        font-size: .6em;
+    }
+</style>
+
+<div class = 'userInfo'>
+    <img class = 'profilePicDisplay' id ='profilePicDisplay'/>
+    <div class = 'textVerticalCenter'>
+        <p class = 'username' id = 'username'></p>    
+    </div>
+</div>
+    <button class = 'logout' onclick = 'logout()'> log out </button>
+<hr>
+<p> your posts </p>
+<div id = 'postsContainer'></div>
+
+<script>
+    getUserInfo();
+    function getUserInfo() {
+    // Clear postsContainer
+    $('#postsContainer').empty();
+
+    // Send an AJAX request to get user info
+    $.ajax({
+        url: 'utils/getCurrentUsersInfo.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                var userInfo = response.userInfo;
+                // Update HTML with user info
+                $('#username').text(userInfo.username);
+                $('#profilePicDisplay').attr('src', 'resources/pfp/' + userInfo.profilePicPath);
+
+                // Now, request and display posts
+                $.ajax({
+                    url: 'utils/getCurrentUsersPost.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(postsResponse) {
+                        if (postsResponse.success) {
+                            var posts = postsResponse.posts;
+                            var postsContainer = $('#postsContainer');
+
+                            posts.forEach(function(post) {
+                                var postDate = new Date(post.datePosted);
+                                var options = { month: 'short', day: '2-digit', year: 'numeric',hour: '2-digit', minute: '2-digit', hour12: true };
+                                var formattedDate = postDate.toLocaleDateString('en-US', options);
+                                
+                                var postHTML = '<div class="post">';
+                                postHTML += "<div class = 'userInfoContainer'>";
+                                postHTML += "<img class = 'profilePic' src='resources/pfp/" + userInfo.profilePicPath + "' alt='Profile Picture'>";
+                                postHTML += "<div class = 'textVerticalCenter'>";
+                                postHTML += "<p class = 'username'>" + userInfo.username + '</p>';
+                                postHTML += "</div>";
+                                postHTML += "</div>";
+                                postHTML += "<p class = 'message' >" + post.message + '</p>';
+                                postHTML += "<p class='datePosted'>" + formattedDate + '</p>';
+                                postHTML += "<img class='trashIcon' src = 'resources/icons/trash.png' onclick='deletePost(" + post.postID + ")' />";
+                                postHTML += '</div>';
+                                postsContainer.append(postHTML);
+                            });
+                        } else {
+                            console.error('Error fetching posts: ' + postsResponse.message);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error:', textStatus, errorThrown);
+                    }
+                });
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+        }
+    });
+}
+
+
+function deletePost(postID) {
+    // Send an AJAX request to delete the post
+    $.ajax({
+        url: 'utils/deletePost.php',
+        type: 'POST',
+        data: {
+            postID: postID
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                // Post deleted successfully, you can update the UI if needed
+                console.log('Post deleted successfully.');
+                // Remove the post from the UI (optional)
+                getUserInfo();
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+        }
+    });
+}
+
+function logout() {
+    $.ajax({
+        url: 'utils/logout.php',
+        type: 'POST',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                // Redirect to the login page after successful logout
+                window.location.href = 'index.php'; // Adjust the URL as needed
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+        }
+    });
+}
+
+</script>

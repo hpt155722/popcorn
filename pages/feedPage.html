@@ -1,1 +1,279 @@
-<p> FEED PAGE </p>
+<style>
+        html, body {
+            background-color: #fff7f0;
+        }
+        @media (hover: hover) {
+    .likeIcon:hover  {
+        opacity: .5;
+        cursor: pointer;
+    }
+}
+    .textVerticalCenter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 10vw;
+    }
+    .post
+    {
+        background-color: #ffc337a2;
+        border-radius: 5vw;
+        margin: 3vh 5vw;
+        padding: 3vh 6vw 5vh 6vw;
+        position: relative;
+    }
+    .userInfoContainer
+    {
+        display: flex;
+        width: 50%;
+        height: auto;
+    }
+    .username
+    {
+        font-size: 1.2em;
+        font-family: roundsBold;
+        color: #36394d;
+        margin: 0 4vw;
+    }
+    .profilePic
+    {
+        width: 13vw;
+        height: 13vw;
+        max-width: 300px;
+        border-radius: 100vw;
+    }
+    .message
+    {
+        font-size: 1em;
+        font-family: roundsBold;
+        color: #36394d;
+        margin-bottom: 4vh;
+        text-align: left;
+    }
+    .datePosted
+    {
+        font-size: .7em;
+        font-family: roundsBold;
+        color: #36394dbb;
+        position: absolute;
+        bottom: .5vh;
+        right: 5vw;
+    }
+    .postButton
+    {
+        margin-top: 3vh;
+        margin-bottom: 0;
+        width: 60vw;
+    }
+    .createNewPostEntireContainer
+    {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+    }
+    .createNewPostContainer
+    {
+        z-index: 901;
+        background-color: #ffc337;
+        border-radius: 1em;
+        padding: 2em 2em 1em 2em;
+    }
+    textarea
+    {
+        background-color: #fff7f0;
+        padding: 1em;
+        font-size: 1em;
+        font-family: rounds;
+        color: #36394d;
+        border: 0;
+        border-radius: 1em;
+        resize: none;
+        width: 60vw;
+    }
+    textarea:focus
+    {
+        outline:0;
+        border: 0;
+    }
+    .likeIcon
+    {
+        width: 5vw;
+        position: absolute;
+        bottom: 2vh;
+        left: 5vw;
+    }
+</style>
+
+<!-- Post Button -->
+<div class = 'horContainer'>
+    <button class = 'postButton' onclick = 'openCreatePost()'> post + </button>
+</div>
+
+<!-- Post Container -->
+<div id = 'postsContainer'></div>
+
+<!-- Create new Post -->
+<div class = 'createNewPostEntireContainer'>
+    <div class = 'cover' onclick = 'closeCreatePost()'></div>
+    <div class = 'horContainer'>
+        <div class = 'verContainer'>
+            <div class = 'createNewPostContainer'>
+                <h3> create a new post </h3>
+                <textarea id="userMessage" maxlength="500"></textarea>
+                <div  style = 'display: none' id = 'submitPostContainer' class = 'horContainer'>
+                    <button id = 'submitPost' onclick = 'submitPost()'> pop it! </button>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+<script>
+
+    //--------------------------------------------------------------------------------------
+
+            //FEED 
+
+    //--------------------------------------------------------------------------------------
+
+    getAndDisplayPosts();
+    $('.createNewPostEntireContainer').hide();
+    function getAndDisplayPosts() {
+        $('#postsContainer').empty(); 
+        $.ajax({
+            url: 'utils/getPosts.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response && response.length > 0) {
+                    var posts = response;
+                    var postsContainer = $('#postsContainer');
+                    
+                    posts.forEach(function(post) {
+
+                    var postDate = new Date(post.datePosted);
+                    var options = { month: 'short', day: '2-digit', year: 'numeric',hour: '2-digit', minute: '2-digit', hour12: true };
+                    var formattedDate = postDate.toLocaleDateString('en-US', options);
+
+                    // Get username and profilePicPath for this post
+                    $.ajax({
+                        url: 'utils/getUserInfo.php', // Adjust the URL to your server-side script
+                        type: 'GET',
+                        data: { userID: post.userID },
+                        dataType: 'json',
+                        success: function(userInfo) {
+                            var postHTML = '<div class="post">';
+                            postHTML += "<div class = 'userInfoContainer'>";
+                            postHTML += "<img class = 'profilePic' src='resources/pfp/" + userInfo.userInfo.profilePicPath + "' alt='Profile Picture'>";
+                            postHTML += "<div class = 'textVerticalCenter'>";
+                            postHTML += "<p class = 'username'>" + userInfo.userInfo.username + '</p>';
+                            postHTML += "</div>";
+                            postHTML += "</div>";
+                            postHTML += "<p class = 'message' >" + post.message + '</p>';
+                            postHTML += "<p class='datePosted'>" + formattedDate + '</p>';
+                            postHTML += "<img class = 'likeIcon' id='likeIcon-" + post.postID + "' src = 'resources/icons/noLike.png' onclick='likePost(" + post.postID + ")' />";
+                            postHTML += '</div>';
+                            postsContainer.append(postHTML);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('Error fetching user info:', textStatus, errorThrown);
+                        }
+                    });
+                    });
+                } else {
+                    console.log('No posts found.');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error fetching posts:', textStatus, errorThrown);
+            }
+        });
+    }
+
+    function openCreatePost()
+    {
+        $('.createNewPostEntireContainer').addClass('fade-in').show();
+        $('html').css('overflow-y', 'hidden');
+        setTimeout(() => {
+            $('.createNewPostEntireContainer').removeClass('fade-in');
+        }, 300);
+        
+    }
+
+    function closeCreatePost()
+    {
+        $('#userMessage').val('');
+        $('.createNewPostEntireContainer').addClass('fade-out');
+        $('html').css('overflow-y', 'auto');
+        setTimeout(() => {
+            $('.createNewPostEntireContainer').removeClass('fade-out').hide();
+        }, 300);
+    }
+
+    $('textarea').on('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+    var userMessage = $(this).val().trim(); // Get the text and remove leading/trailing spaces
+
+        if (userMessage !== '') {
+            $('#submitPostContainer').show(); // Show the container if there's text
+        } else {
+            $('#submitPostContainer').hide(); // Hide the container if it's empty or only spaces
+        }
+  });
+
+
+    function submitPost() {
+        var userMessage = $('#userMessage').val(); // Get the text from the textarea
+
+        // Send the data to the server using Ajax
+        $.ajax({
+            url: 'utils/addPost.php',
+            type: 'POST',
+            data: {
+                message: userMessage,
+            },
+            success: function(response) {
+                closeCreatePost();
+                getAndDisplayPosts();
+                console.log(response);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Handle any errors
+                console.error('Error:', textStatus, errorThrown);
+            }
+        });
+    }
+
+    function likePost(postID) {
+    $.ajax({
+        url: 'utils/likePost.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            postID: postID
+        },
+        success: function(response) {
+            if (response.success) {
+                var likeIcon = $('#likeIcon-' + postID);
+
+                if (response.message === 'Post liked') {
+                    likeIcon.attr('src', 'resources/icons/heart.png');
+                } else if (response.message === 'Post unliked') {
+                    likeIcon.attr('src', 'resources/icons/noLike.png');
+                }
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+        }
+    });
+}
+
+
+</script>
