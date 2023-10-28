@@ -1,0 +1,18 @@
+<div class = 'verContainer'>
+    <div class = 'verContainerSmaller'>
+        <picture>
+            <source media="(max-width: 700px)" srcset="resources/images/logo_small.webp">
+            <img class="logo" src="resources/images/logo_large.webp" alt="Logo">
+        </picture>
+        <input type = 'text' id = 'createdUsername' placeholder = 'create your username' required>
+        <input type = 'password' id = 'createdPassword' placeholder = 'create a password' required>
+        <input type = 'password' id = 'createdPasswordConfirm' placeholder = 'confirm your password' required>
+        <p id = 'signupError' class = 'error' > </p>
+        <button id = 'signupButton' onclick = 'validateSignup()'> sign up. </button>
+        <p class = 'redirect' onclick = "setQueryParam('login')"> already a user? log in! </p>
+        <picture>
+            <source media="(max-width: 700px)" srcset="resources/images/girl_small.webp">
+            <img class="girl" src="resources/images/girl_large.webp" alt="Logo">
+        </picture>
+    </div>
+</div>

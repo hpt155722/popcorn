@@ -1,0 +1,141 @@
+@font-face {
+  font-family: comic;
+  src: url(resources/fonts/Hey\ Comic.otf);
+}
+
+@font-face {
+    font-family: roundsBold;
+    src: url(resources/fonts/TT\ Rounds\ Neue\ Trial\ DemiBold.ttf);
+  }
+
+@font-face {
+font-family: rounds;
+src: url(resources/fonts/TT\ Rounds\ Neue\ Trial\ Medium.ttf);
+}
+  
+
+body::-webkit-scrollbar {
+  width: 0.0; 
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #fbce00;
+  font-size: 1em;
+}
+
+@media (hover: hover) {
+  button:hover, .redirect:hover {
+      opacity: .5;
+      cursor: pointer;
+  }
+}
+
+.cover {
+  width: 100%;
+  height: 100%;
+  background-color: #4142459a;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 900;
+}
+
+.horContainer {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center; 
+  width: 100%;
+  height: auto;
+}
+
+.verContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  width: auto;
+}
+
+.verContainerSmaller {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  height: 60%;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  grid-area: overlap;
+}
+
+.loginPage,
+.signUpPage,
+.createAccountPage,
+.feedPage,
+.searchPage,
+.searchResultsPage,
+.notificationPage,
+.accountPage {
+    min-height: 100%;
+}
+.logo
+{
+  width: 60vw;
+  max-width: 300px;
+  margin: 2vh;
+}
+.girl
+{
+  width: 35vw;
+  max-width: 300px;
+  margin-bottom: 4vh;
+}
+input
+{
+  font-size: 1em;
+  font-family: roundsBold;
+  text-align: center;
+  margin: 1.2vh;
+  border: 0;
+  border-radius: .5em;
+  padding: .5em;
+}
+input:focus
+{
+  outline: 0;
+  border: 0;
+}
+button
+{
+  background-color: #fd5f86;
+  padding: .5em 2em;
+  border-radius: 1em;
+  border: 0;
+  margin: 2vh;
+  font-family: roundsBold;
+  font-size: 1em;
+  color: white;
+}
+.redirect
+{
+  font-family: roundsBold;
+  font-size: 1em;
+  color: #414245;
+}
+
+.error
+{
+  font-family: roundsBold;
+  font-size: 1em;
+  color: #bb3153;
+  margin: 0;
+}
