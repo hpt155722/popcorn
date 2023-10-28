@@ -4,11 +4,12 @@
 
     $userID = $_SESSION['currUser'];
 
-    // Query to retrieve data from likes, posts, and users tables
-    $stmt = $conn->prepare("SELECT likes.*, posts.*, users.* FROM likes
-                            INNER JOIN posts ON likes.postID = posts.postID
-                            INNER JOIN users ON posts.userID = users.userID
-                            WHERE posts.userID = ?");
+    // Query to retrieve a list of userID from posts, sorted by dateLiked in descending order
+    $stmt = $conn->prepare("SELECT likes.userID 
+                            FROM posts
+                            INNER JOIN likes ON posts.postID = likes.postID
+                            WHERE posts.userID = ?
+                            ORDER BY likes.dateLiked DESC");
     $stmt->bind_param("s", $userID);
     $stmt->execute();
     $result = $stmt->get_result();

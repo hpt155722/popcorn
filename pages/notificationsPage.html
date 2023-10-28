@@ -38,11 +38,13 @@
         dataType: 'json',
         success: function(response) {
             if (response.success) {
+                console.log(response);
                 var data = response.data;
                 if (data.length > 0) {
                     $('#noNotifications').hide();
                     // Process data
                     data.forEach(function(row) {
+                        console.log(row);
                         var likeUserID = row.userID;
                         // Additional AJAX request to get username
                         $.ajax({
