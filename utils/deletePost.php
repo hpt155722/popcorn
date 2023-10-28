@@ -18,6 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("s", $postID);
         $stmt->execute();
 
+        // Delete corresponding likes
+        $stmt = $conn->prepare("DELETE FROM likes WHERE postID = ?");
+        $stmt->bind_param("s", $postID);
+        $stmt->execute();
+
         // Provide a success response
         echo json_encode(array("success" => true));
     } else {

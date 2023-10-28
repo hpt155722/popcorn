@@ -21,12 +21,15 @@
             echo "username already exists. please choose a different username.";
         } else {
             // Create new user in database
-            $stmt = $conn->prepare("INSERT INTO users (username, password, userID) VALUES (?, ?, NULL)");
+            $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
             $stmt->bind_param("ss", $username, $password);
             if ($stmt->execute()) {
+                // Retrieve the auto-generated userID
+                $userID = mysqli_insert_id($conn);
+
                 // Start session and set current user
                 session_start();
-                $_SESSION['currUser'] = $username;
+                $_SESSION['currUser'] = $userID;
                 echo "Signup successful!";
             } else {
                 echo "error: Error signing up. Please try again.";

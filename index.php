@@ -74,7 +74,6 @@
     <!-- Account Page -->
     <div id="userProfilePage"></div>
 
-
     <!-- Footer -->
     <div id="footer"></div>
 </body>

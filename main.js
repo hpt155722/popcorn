@@ -7,12 +7,12 @@
 function onload()
 {
     if (!getQueryParam('page')) { 
-        $('#loginPage', '#signUpPage, #createAccountPage, #feedPage, #searchPage, #searchResultsPage, #notificationPage, #accountPage').hide();
+        $('#loginPage', '#signUpPage, #createAccountPage, #feedPage, #searchPage, #searchResultsPage, #notificationPage, #userProfilePage').hide();
         setQueryParam('login');
     }
     else
     {
-        $('#loginPage', '#signUpPage, #createAccountPage, #feedPage, #searchPage, #searchResultsPage, #notificationPage, #accountPage').hide();
+        $('#loginPage', '#signUpPage, #createAccountPage, #feedPage, #searchPage, #searchResultsPage, #notificationPage, #userProfilePage').hide();
         loadPageBasedOnQueryParam();
     }
 }

@@ -6,54 +6,33 @@
         $currentUsername = $_SESSION['currUser'];
         $croppedData = $_POST['croppedData'];
 
-        //extract just the base64 encoded data from the URI
-        if (strpos($croppedData, 'data:image/jpeg;base64,') !== false) {
-            $croppedData = str_replace('data:image/jpeg;base64,', '', $croppedData);
-        }
-        
+        // Extract just the base64 encoded data from the URI
+        $data = explode(',', $croppedData);
+        $croppedImage = base64_decode($data[1]);
 
-        // Check if the data is valid
-        if ($croppedData && $currentUsername) {
-            // Decode the base64 encoded image data
-            $croppedImage = base64_decode($croppedData);
+        if ($croppedImage !== false && $currentUsername) {
+            $filename = uniqid() . '.webp';
+            $filepath = '../resources/pfp/' . $filename;
 
-            // Check if the decoding was successful
-            if ($croppedImage !== false) {
-                // Generate a unique filename
-                $filename = uniqid() . '.webp';
+            $source = imagecreatefromstring($croppedImage);
 
-                // Specify the file path
-                $filepath = '../resources/pfp/' . $filename;
+            if ($source !== false) {
+                imagewebp($source, $filepath);
+                imagedestroy($source);
 
-                // Create a GD image resource from the uploaded data
-                $source = imagecreatefromstring($croppedImage);
+                $stmt = $conn->prepare("UPDATE users SET profilePicPath = ? WHERE userID = ?");
+                $stmt->bind_param("ss", $filename, $currentUsername);
+                $stmt->execute();
+                $stmt->close();
 
-                // Check if the image resource was created
-                if ($source !== false) {
-                    // Save the image in webp format
-                    imagewebp($source, $filepath);
-
-                    // Free up memory
-                    imagedestroy($source);
-
-                    // Insert the image information into your database
-                    $stmt = $conn->prepare("UPDATE users SET profilePicPath = ? WHERE username = ?");
-                    $stmt->bind_param("ss", $filename, $currentUsername);
-                    $stmt->execute();
-                    $stmt->close();
-
-                    echo "Image uploaded successfully!";
-                } else {
-                    echo "Error creating image resource.";
-                }
+                echo "Image uploaded successfully!";
             } else {
-                echo "Error decoding image data.";
+                echo "Error creating image resource.";
             }
         } else {
-            echo "Missing data.";
+            echo "Missing data or error decoding image data.";
         }
-    }
-    else {
+    } else {
         echo "Invalid request method!";
     }
 

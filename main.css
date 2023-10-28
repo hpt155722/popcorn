@@ -150,7 +150,8 @@ h2
   text-align: center;
   color:#414245;
   font-family: comic;
-  font-size: 2.5em;
+  font-size: 2em;
+  text-wrap: wrap;
 }
 h3
 {

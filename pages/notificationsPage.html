@@ -28,7 +28,8 @@
 </style>
 
 <div class = 'notificationContainer'></div>
-<p id = 'noNotifications' style = 'display: none'> no notifications yet! </p>
+<p id = 'noNotifications'> no notifications yet! </p>
+
 <script>
     function getLikesPostsUsers() {
     $.ajax({
@@ -39,6 +40,7 @@
             if (response.success) {
                 var data = response.data;
                 if (data.length > 0) {
+                    $('#noNotifications').hide();
                     // Process data
                     data.forEach(function(row) {
                         var likeUserID = row.userID;

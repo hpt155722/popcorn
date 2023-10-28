@@ -1,9 +1,6 @@
 
 <style>
-    html, body
-    {
-        overflow-y: hidden;
-    }
+
     .skip
     {
         text-align: center;
@@ -16,8 +13,8 @@
     }
     .uploadImage
     {
-        width:120vw;
-        max-width: 600px;
+    width:120vw;
+    max-width: 600px;
     }
     #croppedImage
     {
@@ -25,10 +22,6 @@
     }
     .cr-boundary {
     border-radius: 50%;
-    }
-    .cr-slider-wrap
-    {
-        display:none;
     }
 
 </style>
@@ -54,8 +47,9 @@
         <input style = 'display: none' type="file" id="fileInput">
 
     </div>
-    <p class = 'skip' onclick = "setQueryParam('feed')"> skip this step </p>
+    <p class = 'skip'> skip this step </p>
 </div>
+---------------------------------------------------------------------------
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
@@ -70,7 +64,6 @@
     });
 
     $('#fileInput').change(function() {
-        $('.skip').hide();
         var file = this.files[0];
         if (file) {
             var reader = new FileReader();
@@ -82,13 +75,13 @@
                 var $croppedImage = $('#croppedImage');
                 $croppedImage.croppie({
                 viewport: {
-                    width: 200,
-                    height: 200,
+                    width: 300,
+                    height: 300,
                     type: 'circle'
                 },
                 boundary: {
-                    width: 200,
-                    height: 200
+                    width: 300,
+                    height: 300
                 }
                 });
                 $croppedImage.croppie('bind', {
