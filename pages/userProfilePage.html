@@ -4,17 +4,17 @@
     }
 
     @media (hover: hover) {
-    .trashIcon:hover w {
+    .trashIcon:hover, #profilePicDisplay:hover {
         opacity: .5;
         cursor: pointer;
     }
 }
     #profilePicDisplay
     {
-        border-radius: 10em;
+        border-radius: 999vw;
         width: 25vw;
-        max-width: 500px;
-        margin: 2em 1em 1em 2em;
+        max-width: 150px;
+        margin: 2em 1em 1em 14vw;
     }
     #username
     {
@@ -35,14 +35,15 @@
     {
         width: 80%;
     }
-    
     .post
     {
         background-color: #ffc337a2;
-        border-radius: 5vw;
+        border-radius: 3em;
         margin: 3vh 5vw;
-        padding: 3vh 6vw;
+        padding: 3vh 6vw 5vh 6vw;
         position: relative;
+        width: 75vw;
+        max-width: 500px;
     }
     .userInfoContainer
     {
@@ -61,8 +62,9 @@
     {
         width: 13vw;
         height: 13vw;
-        max-width: 300px;
-        border-radius: 100vw;
+        max-width: 80px;
+        max-height: 80px;
+        border-radius: 999vw;
     }
     .message
     {
@@ -78,15 +80,15 @@
         font-family: roundsBold;
         color: #36394dbb;
         position: absolute;
-        bottom: .5vh;
-        right: 5vw;
+        bottom: .5em;
+        right: 4em;
     }
     .trashIcon
     {
-        width: 5vw;
+        width: 2em;
         position: absolute;
         bottom: 2vh;
-        left: 5vw;
+        left: 2em;
     }
     .logout
     {
@@ -95,10 +97,39 @@
         right: 3vw;
         font-size: .6em;
     }
+    .changeProfilePictureEntireContainer
+    {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        right: 0;
+    }
+    .smallVerContainer
+    {
+        z-index: 901;
+        position: relative;
+    }
+    .uploadImage
+    {
+        width:120vw;
+        max-width: 600px;
+    }
+    #croppedImage
+    {
+        height: 35vh;
+    }
+    .cr-boundary {
+    border-radius: 50%;
+    }
+    .cr-slider-wrap
+    {
+        display:none;
+    }
 </style>
 
 <div class = 'userInfo'>
-    <img class = 'profilePicDisplay' id ='profilePicDisplay'/>
+    <img onclick = 'openChangePFP()' class = 'profilePicDisplay' id ='profilePicDisplay'/>
     <div class = 'textVerticalCenter'>
         <p class = 'username' id = 'username'></p>    
     </div>
@@ -108,8 +139,36 @@
 <p> your posts </p>
 <div id = 'postsContainer'></div>
 
+<!-- Change profile picture-->
+<div class = 'changeProfilePictureEntireContainer'>
+    <div class = 'cover' onclick = 'closeChangePFP()'></div>
+    <div class = 'verContainer'>
+        <div class = 'smallVerContainer' style = 'height: 70vh'>
+            <h3> upload a profile picture </h3>
+            <!-- Display the image -->
+            <picture>
+                <source media="(max-width: 700px)" srcset="resources/images/uploadPhoto_small.webp">
+                <img id="uploadImage" class = 'uploadImage' src="resources/images/uploadPhoto_large.webp" alt="Upload Image">
+            </picture>
+
+            <!-- Crop photo container -->
+            <div id="croppedImage"></div>
+
+            <div class = 'horContainer'>
+                <button style = 'display: none' id="setProfilePic" onclick = 'setAsProfile()'>  set as profile</button>
+            </div>
+
+            <!-- Add an invisible file input element -->
+            <input style = 'display: none' type="file" id="fileInput">
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
 <script>
     getUserInfo();
+    $('.changeProfilePictureEntireContainer').hide();
     function getUserInfo() {
     // Clear postsContainer
     $('#postsContainer').empty();
@@ -141,7 +200,7 @@
                                 var options = { month: 'short', day: '2-digit', year: 'numeric',hour: '2-digit', minute: '2-digit', hour12: true };
                                 var formattedDate = postDate.toLocaleDateString('en-US', options);
                                 
-                                var postHTML = '<div class="post">';
+                                var postHTML = "<div class = 'horContainer'> <div class='post'>";
                                 postHTML += "<div class = 'userInfoContainer'>";
                                 postHTML += "<img class = 'profilePic' src='resources/pfp/" + userInfo.profilePicPath + "' alt='Profile Picture'>";
                                 postHTML += "<div class = 'textVerticalCenter'>";
@@ -216,5 +275,123 @@ function logout() {
         }
     });
 }
+
+
+//Change profile picture functions
+function openChangePFP()
+    {
+        $('.changeProfilePictureEntireContainer').addClass('fade-in').show();
+        $('html').css('overflow-y', 'hidden');
+        setTimeout(() => {
+            $('.changeProfilePictureEntireContainer').removeClass('fade-in');
+        }, 300);
+        
+    }
+
+    function closeChangePFP()
+    {
+        $('.changeProfilePictureEntireContainer').addClass('fade-out');
+        $('html').css('overflow-y', 'auto');
+        setTimeout(() => {
+            $('.changeProfilePictureEntireContainer').removeClass('fade-out').hide();
+        }, 300);
+    }
+
+    //CREATE ACCOUNT FUNCTION DUPE
+     // Trigger file input when the label is clicked
+     $('#uploadImage').click(function() {
+        $('#fileInput').click();
+    });
+
+        $('#fileInput').change(function() {
+            $('.skip').hide();
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var image = new Image();
+                image.src = e.target.result;
+                $(image).on('load', function() {
+                    // Initialize Croppie
+                    var $croppedImage = $('#croppedImage');
+                    $croppedImage.croppie({
+                    viewport: {
+                        width: 200,
+                        height: 200,
+                        type: 'circle'
+                    },
+                    boundary: {
+                        width: 200,
+                        height: 200
+                    }
+                    });
+                    $croppedImage.croppie('bind', {
+                    url: e.target.result
+                    });
+
+                    // Set cropContainer size to a square
+                    var size = Math.min(image.width, image.height);
+                    var $cropContainer = $('#cropContainer');
+                    $cropContainer.width(size);
+                    $cropContainer.height(size);
+
+                    // Set up Croppie events
+                    $croppedImage.on('update.croppie', function (ev, data) {
+                    // Update the display of the cropped image
+                    $croppedResult = $('#croppedResult');
+                    $croppedResult.empty();
+                    $croppedResult.append($('<img>', { src: data.image }));
+                    });
+
+                    // Show the "Set as Profile Pic" button
+                    $('#setProfilePic').show();
+                    $('#uploadImage').hide();
+                });
+                };
+                reader.readAsDataURL(file);
+            }
+            });
+
+
+        // Handle "Set as Profile Pic" button click
+        function setAsProfile() {
+            $('#croppedImage').croppie('result', {
+            type: 'base64',
+            size: 'original',
+            format: 'jpeg'
+            }).then(function(croppedData) {
+            // Save the cropped image (you can use AJAX to send it to the server)
+            saveCroppedImage(croppedData);
+            });
+        };
+
+        function saveCroppedImage(croppedData) {
+        var currentUsername = sessionStorage.getItem('currentUsername');
+
+        // Send the cropped image data to the server using Ajax
+        $.ajax({
+            url: 'utils/uploadPFP.php', // Adjust the URL as needed
+            type: 'POST',
+            data: {
+                currentUsername: currentUsername,
+                croppedData: croppedData
+            },
+            success: function(response) {
+                // Handle the response
+                console.log(response);
+
+                // Check if the response is "Image uploaded successfully!"
+                if (response.trim() === "Image uploaded successfully!") {
+                    // If so, redirect to the 'feed' page
+                    setQueryParam('feed');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Handle any errors
+                console.error('Error:', textStatus, errorThrown);
+            }
+        });
+    }
+
 
 </script>

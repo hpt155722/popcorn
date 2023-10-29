@@ -13,14 +13,17 @@
         align-items: center;
         justify-content: center;
         height: 10vw;
+        max-height: 100px;
     }
     .post
     {
         background-color: #ffc337a2;
-        border-radius: 5vw;
+        border-radius: 3em;
         margin: 3vh 5vw;
         padding: 3vh 6vw 5vh 6vw;
         position: relative;
+        width: 75vw;
+        max-width: 500px;
     }
     .userInfoContainer
     {
@@ -39,7 +42,8 @@
     {
         width: 13vw;
         height: 13vw;
-        max-width: 300px;
+        max-width: 85px;
+        max-height: 85px;
         border-radius: 100vw;
     }
     .message
@@ -56,14 +60,15 @@
         font-family: roundsBold;
         color: #36394dbb;
         position: absolute;
-        bottom: .5vh;
-        right: 5vw;
+        bottom: .5em;
+        right: 4em;
     }
     .postButton
     {
         margin-top: 3vh;
         margin-bottom: 0;
         width: 60vw;
+        max-width: 500px;
     }
     .createNewPostEntireContainer
     {
@@ -99,10 +104,10 @@
     }
     .likeIcon
     {
-        width: 5vw;
+        width: 2.2em;
         position: absolute;
-        bottom: 2vh;
-        left: 5vw;
+        bottom: 1.4em;
+        left: 2.4em;
     }
     .space
     {
@@ -174,7 +179,7 @@
                                 dataType: 'json',
                                 success: function(likeInfo) {
                                     var likeIconSrc = likeInfo.liked ? 'resources/icons/heart.png' : 'resources/icons/noLike.png';
-                                    var postHTML = '<div class="post">';
+                                    var postHTML = "<div class = 'horContainer'> <div class='post'>";
                                     postHTML += "<div class='userInfoContainer'>";
                                     postHTML += "<img class='profilePic' src='resources/pfp/" + userInfo.userInfo.profilePicPath + "' alt='Profile Picture'>";
                                     postHTML += "<div class='textVerticalCenter'>";
@@ -184,7 +189,7 @@
                                     postHTML += "<p class='message'>" + post.message + '</p>';
                                     postHTML += "<p class='datePosted'>" + formattedDate + '</p>';
                                     postHTML += "<img class='likeIcon' id='likeIcon-" + post.postID + "' src='" + likeIconSrc + "' onclick='likePost(" + post.postID + ")' />";
-                                    postHTML += '</div>';
+                                    postHTML += '</div></div>';
                                     postsContainer.append(postHTML);
                                 },
                                 error: function(jqXHR, textStatus, errorThrown) {
