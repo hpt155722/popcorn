@@ -1,5 +1,4 @@
 <?php
-    // Include database connection
     include("connection.php");
 
     // Query to retrieve posts sorted by datePosted (newest to oldest)

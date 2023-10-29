@@ -1,5 +1,4 @@
 <?php
-    // Include database connection
     include("connection.php");
 
     // Check if the request method is GET

@@ -4,7 +4,7 @@ include("connection.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $postID = $_POST['postID'];
-    $userID = $_SESSION['currUser']; // Assuming you have a session variable for the current user
+    $userID = $_SESSION['currUser']; 
 
     // Query to check if the current user owns the post
     $stmt = $conn->prepare("SELECT * FROM posts WHERE postID = ? AND userID = ?");
