@@ -65,8 +65,6 @@
     <!-- Search Page -->
     <div id="searchPage"></div>
 
-    <!-- Search Results -->
-    <div id="searchResultsPage"></div>
 
     <!-- Notification Page -->
     <div id="notificationsPage"></div>

@@ -1,1 +1,157 @@
-<p> SEARCH PAGE </p>
+<style>
+    html, body {
+        background-color: #fff7f0;
+    }
+    @media (hover: hover) {
+        .likeIcon:hover, .searchIcon:hover  {
+            opacity: .5;
+            cursor: pointer;
+        }
+        
+    }
+
+    .searchBar
+    {
+        width: 60vw;
+        max-width: 500px;
+        border: .4em solid #ffc337;
+        border-radius: 5vw;
+    }
+    .searchBar:focus
+    {
+        border: .4em solid #ffc337;
+    }
+    .searchContainer
+    {
+        display: flex;
+    }
+    .searchIcon
+    {
+        width: 2em;
+    }
+    .textVerticalCenter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height:8vh;
+        min-height: 55px;
+    }
+    .post
+    {
+        background-color: #ffc337a2;
+        border-radius: 3em;
+        margin: 2vh 5vw;
+        padding: 3vh 6vw 5vh 6vw;
+        position: relative;
+        width: 75vw;
+        max-width: 500px;
+    }
+    .userInfoContainer
+    {
+        display: flex;
+        width: 50%;
+        height: auto;
+    }
+    .username
+    {
+        font-size: 1.2em;
+        font-family: roundsBold;
+        color: #36394d;
+        margin: 0 4vw;
+    }
+    .profilePic
+    {
+        width: 13vw;
+        height: 13vw;
+        max-width: 85px;
+        max-height: 85px;
+        border-radius: 100vw;
+    }
+    .message
+    {
+        font-size: 1em;
+        font-family: roundsBold;
+        color: #36394d;
+        margin-bottom: 4vh;
+        text-align: left;
+    }
+    .datePosted
+    {
+        font-size: .7em;
+        font-family: roundsBold;
+        color: #36394dbb;
+        position: absolute;
+        bottom: .5em;
+        right: 4em;
+    }
+</style>
+
+<div class = 'horContainer'>
+    <div class = 'searchContainer'>
+        <input id = 'searchBar' class = 'searchBar' placeholder="search for a post...">
+        <div id = 'searchIconContainer' class ='textVerticalCenter' style = 'display: none'>
+            <img class = 'searchIcon' src = 'resources/icons/search.png' onclick = 'searchPosts()'/>
+        </div>
+    </div>
+</div>
+
+
+<div id = 'searchResults'></div>
+
+<script>
+    $('#searchBar').on('input', function() {
+        var searchBarValue = $(this).val().trim();
+        var searchIconContainer = $('#searchIconContainer');
+
+        if (searchBarValue !== '') {
+            searchIconContainer.show();
+        } else {
+            searchIconContainer.hide();
+        }
+    });
+
+    function searchPosts() {
+    var searchTerm = $('#searchBar').val().trim();
+
+    if (searchTerm !== '') {
+        $.ajax({
+            url: 'utils/searchPosts.php', // Adjust the URL to your server-side script
+            type: 'POST',
+            data: {
+                searchTerm: searchTerm
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    var data = response.data;
+                    console.log(response);
+                    // Clear any existing search results
+                    $('#searchResults').empty();
+
+                    // Loop through the data and display results
+                    data.forEach(function(row) {
+                        var postHTML = '<div class="horContainer"> <div class="post">';
+                        postHTML += "<div class = 'userInfoContainer'>";
+                        postHTML += "<img class = 'profilePic' src='resources/pfp/" + row.profilePicPath + "' alt='Profile Picture'>";
+                        postHTML += "<div class = 'textVerticalCenter'>";
+                        postHTML += "<p class = 'username'>" + row.username + '</p>';
+                        postHTML += "</div>";
+                        postHTML += "</div>";
+                        postHTML += "<p class = 'message' >" + row.message + '</p>';
+                        postHTML += "<p class='datePosted'>" + row.datePosted + '</p>';
+                        postHTML += '</div></div>';
+
+                        $('#searchResults').append(postHTML);
+                    });
+                } else {
+                    console.error('Error: ' + response.message);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+            }
+        });
+    }
+}
+
+</script>
