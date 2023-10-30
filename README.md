@@ -22,7 +22,7 @@ A text based social media platform.
 ☆ Image upload for profile picture <br>
 ☆ Like post feature <br>
 ☆ Search engine for post content <br>
-☆ Notifications tab <br>
+☆ Notifications tab for likes <br>
 ☆ User profile page to view all of your posts and/or delete them <br>
 ☆ Custom art <br>
 
@@ -49,4 +49,5 @@ A text based social media platform.
  <br>
 ☆ Follow feature <br>
 ☆ Profile bio <br>
+☆ Comment feature <br>
 
