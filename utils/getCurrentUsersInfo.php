@@ -5,7 +5,7 @@
         $userID = $_SESSION['currUser'];
 
         // Query to retrieve user information based on userID
-        $stmt = $conn->prepare("SELECT username, profilePicPath FROM users WHERE userID = ?");
+        $stmt = $conn->prepare("SELECT username, profilePicPath FROM users WHERE userID = ? ");
         $stmt->bind_param("s", $userID);
         $stmt->execute();
         $result = $stmt->get_result();

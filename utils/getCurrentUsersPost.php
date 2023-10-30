@@ -5,7 +5,7 @@
     $userID = $_SESSION['currUser'];
 
     // Query to retrieve posts based on userID
-    $stmt = $conn->prepare("SELECT * FROM posts WHERE userID = ?");
+    $stmt = $conn->prepare("SELECT * FROM posts WHERE userID = ? ORDER BY datePosted DESC");
     $stmt->bind_param("s", $userID);
     $stmt->execute();
     $result = $stmt->get_result();

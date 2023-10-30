@@ -145,15 +145,15 @@ function validateLogin()
             },
             success: function(response) {
                 if (response === "Invalid username or password") {
-                    $('#signupError').html(response);
-                    $('#signupError').show();
+                    $('#loginError').html(response);
+                    $('#loginError').show();
                 } else if (response === "Login successful!") {
                     sessionStorage.setItem('currentUsername', username);
                     setQueryParam('feed');
                 }
                 else {
-                    $('#signupError').html(response);
-                    $('#signupError').show();
+                    $('#loginError').html(response);
+                    $('#loginError').show();
                 }
             }
         });

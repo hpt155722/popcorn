@@ -19,7 +19,7 @@
     {
         background-color: #ffc337a2;
         border-radius: 3em;
-        margin: 3vh 5vw;
+        margin: 2vh 5vw;
         padding: 3vh 6vw 5vh 6vw;
         position: relative;
         width: 75vw;
@@ -123,6 +123,7 @@
 <!-- Post Container -->
 <div id = 'postsContainer'></div>
 <div class = 'space'></div>
+
 <!-- Create new Post -->
 <div class = 'createNewPostEntireContainer'>
     <div class = 'cover' onclick = 'closeCreatePost()'></div>
@@ -266,6 +267,7 @@
                 console.error('Error:', textStatus, errorThrown);
             }
         });
+        getAndDisplayPosts();
     }
 
     function likePost(postID) {

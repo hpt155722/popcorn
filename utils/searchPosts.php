@@ -10,10 +10,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Query to retrieve data from posts and users tables
     $stmt = $conn->prepare("SELECT posts.message, posts.datePosted, users.username, users.profilePicPath 
-                            FROM posts 
-                            INNER JOIN users ON posts.userID = users.userID 
-                            WHERE LOWER(posts.message) LIKE LOWER(?)");
-    $stmt->bind_param("s", $searchTerm);
+                        FROM posts 
+                        INNER JOIN users ON posts.userID = users.userID 
+                        WHERE LOWER(posts.message) LIKE LOWER(?) OR LOWER(posts.message) LIKE LOWER(?)");
+
+    $searchTermWithWildcards = '%' . $searchTerm . '%';
+
+    $stmt->bind_param("ss", $searchTerm, $searchTermWithWildcards);
+
     $stmt->execute();
     $result = $stmt->get_result();
 
