@@ -32,11 +32,15 @@ A text based social media platform.
 
  <br>
  <div>
-    <img style = "width: 20vh; margin: 5vh;" src = "thumbnails/webp/login.webp">
-    <img style = "width: 20vh; margin: 5vh;" src = "resources/readmeResources/signup.png">
-    <img style = "width: 20vh; margin: 5vh;" src = "resources/readmeResources/feed.png">
-    <img style = "width: 20vh; margin: 5vh;" src = "resources/readmeResources/community.png">
-    <img style = "width: 20vh; margin: 5vh;" src = "resources/readmeResources/profile.png">
+    <img style = "width: 20vh; margin: 2em;" src = "thumbnails/webp/login.webp">
+    <img style = "width: 20vh; margin: 2em;" src = "thumbnails/webp/signup.webp">
+    <img style = "width: 20vh; margin: 2em;" src = "thumbnails/webp/createAccount.webp">
+    <img style = "width: 20vh; margin: 2em;" src = "thumbnails/webp/createAccount2.webp">
+    <img style = "width: 20vh; margin: 2em;" src = "thumbnails/webp/feed.webp">
+    <img style = "width: 20vh; margin: 2em;" src = "thumbnails/webp/createAPost.webp">
+    <img style = "width: 20vh; margin: 2em;" src = "thumbnails/webp/search.webp">
+    <img style = "width: 20vh; margin: 2em;" src = "thumbnails/webp/userProfile.webp">
+    <img style = "width: 20vh; margin: 2em;" src = "thumbnails/webp/notifications.webp">
 </div>
  <br>
  
@@ -44,3 +48,5 @@ A text based social media platform.
 
  <br>
 ☆ Follow feature <br>
+☆ Profile bio <br>
+
